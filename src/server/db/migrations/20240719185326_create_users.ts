@@ -13,13 +13,9 @@ export async function up(knex: Knex): Promise<void> {
     table.text("refresh_token");
     table.text("google_refresh_token");
     table.timestamp("last_login");
-    table
-      .integer("team_id")
-      .unsigned()
-      .references("id")
-      .inTable("teams")
-      .onDelete("SET NULL");
-    table.enu("role", ["admin", "player", "official"]).defaultTo("player");
+    table.enu("role", ["admin", "player"]).defaultTo("player");
+    table.enu("status", ["active", "inactive"]).defaultTo("active");
+    table.enu("position", ["goaler", "def", "mid", "fwd"]);
     table.timestamps(true, true);
   });
 }

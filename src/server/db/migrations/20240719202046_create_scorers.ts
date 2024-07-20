@@ -13,23 +13,7 @@ export async function up(knex: Knex): Promise<void> {
       .inTable("fixtures")
       .onDelete("CASCADE");
 
-    // references the scoring team
-    table
-      .integer("team_id")
-      .unsigned()
-      .notNullable()
-      .references("id")
-      .inTable("teams")
-      .onDelete("CASCADE");
-
-    // Scorer reference
-    table
-      .integer("scorer_id")
-      .unsigned()
-      .nullable()
-      .references("id")
-      .inTable("users")
-      .onDelete("SET NULL");
+    table.enu("goal_for", ["wagenge", "opponent"]).notNullable();
 
     // Assists reference
     table
