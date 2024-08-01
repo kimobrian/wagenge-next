@@ -19,7 +19,7 @@ export async function up(knex: Knex): Promise<void> {
     table.boolean("played").notNullable().defaultTo(false);
 
     // Date and time
-    table.timestamp("time").notNullable();
+    table.timestamp("time");
 
     // man of the match
     table
@@ -72,6 +72,9 @@ export async function up(knex: Knex): Promise<void> {
     ]
     */
     table.jsonb("scorers").defaultTo("[]");
+
+    table.string("poster"); // Link to poster image if available
+    table.string("scoreboard"); // Link to score image if available
 
     table.timestamps(true, true);
   });
