@@ -19,6 +19,16 @@ export async function up(knex: Knex): Promise<void> {
       .enu("month", ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"])
       .notNullable();
     table.integer("amount").notNullable();
+    table.integer("expected");
+    table.integer("balance");
+
+    // Foreign key referencing fixtures
+    table
+      .integer("fixture_id")
+      .unsigned()
+      .nullable()
+      .references("id")
+      .inTable("fixtures");
 
     table.timestamps(true, true);
   });

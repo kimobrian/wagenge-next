@@ -1,9 +1,16 @@
 import type { Knex } from "knex";
 import { config as env } from "../env";
 
-const { dbUser, dbPass, dbName, dbHost } = env;
+type Environment = typeof process.env.NODE_ENV | "staging";
 
-const config: { [key: string]: Knex.Config } = {
+type Config = {
+  [key in Environment]?: Knex.Config;
+};
+
+const { dbUser, dbPass, dbName, dbHost } = env;
+const environment: Environment = process.env.NODE_ENV || "development";
+
+export const allConfigs: Config = {
   development: {
     client: "postgresql",
     connection: {
@@ -66,4 +73,4 @@ const config: { [key: string]: Knex.Config } = {
   },
 };
 
-module.exports = config;
+export const config = allConfigs[environment];

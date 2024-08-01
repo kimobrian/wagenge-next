@@ -32,6 +32,8 @@ export async function up(knex: Knex): Promise<void> {
 
     // Indexes for performance
     table.index(["fixture_id", "scorer_id"]);
+
+    table.timestamps(true, true);
   });
 }
 
