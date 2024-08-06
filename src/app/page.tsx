@@ -6,6 +6,7 @@ import { useGoogleLogin, CodeResponse } from "@react-oauth/google";
 // import { getDecodedAccessToken } from "@/utils/getDecodedAccessToken";
 import { Helmet } from "react-helmet";
 import Link from "next/link";
+import { GoogleLoginButton } from "@/components";
 
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
@@ -116,16 +117,19 @@ const App = () => {
         <meta name="description" content="Team Wagenge FC"></meta>
         <title>Wagenge FC</title>
       </Helmet>
-      <Link href="/">Home</Link>
-      {user ? (
-        <div>
-          <img src={user.picture} alt="Profile" />
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      ) : (
-        <button onClick={() => login()}>Login with Google</button>
-      )}
-      {user ? <h2>Hello, {user.name}</h2> : <h2>Please log in</h2>}
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        {user ? (
+          <div>
+            <img src={user.picture} alt="Profile" />
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        ) : (
+          <div>
+            <GoogleLoginButton onClick={login} />
+          </div>
+        )}
+        {user ? <h2>Hello, {user.name}</h2> : null}
+      </div>
     </div>
   );
 };
