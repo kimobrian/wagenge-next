@@ -5,6 +5,8 @@ export async function up(knex: Knex): Promise<void> {
     table.increments("id").primary();
     table.string("google_id").unique().notNullable();
     table.string("email").unique().notNullable();
+    table.string("phone_number").nullable();
+    table.string("push_token").nullable();
     table.string("name"); // from google
     table.string("display_name"); // editable
     table.string("first_name");

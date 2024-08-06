@@ -11,8 +11,9 @@ export async function up(knex: Knex): Promise<void> {
       .inTable("users")
       .onDelete("SET NULL");
     table
-      .enu("purpose", ["social_fund", "welfare", "subscription"])
+      .enu("purpose", ["social_fund", "welfare", "subscription", "other"])
       .notNullable();
+    table.string("other");
 
     table.enu("year", ["2024", "2025", "2026", "2027", "2028"]).notNullable();
     table
