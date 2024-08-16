@@ -1,69 +1,44 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useGoogleLogin, CodeResponse } from "@react-oauth/google";
-// import { getDecodedAccessToken } from "@/utils/getDecodedAccessToken";
 import { Helmet } from "react-helmet";
-import Link from "next/link";
-import { GoogleLoginButton } from "@/components";
+import { GoogleLoginButton, Wagenge, Center } from "@/components";
+import Image from "next/image";
+import {
+  LoginResponse,
+  CodeResponseSuccess,
+  CodeResponseError,
+} from "@/app/types";
+import { isTokenExpired } from "@/app/utils";
 
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
-axios.defaults.withCredentials = true;
-
-export type LoginResponse = {
-  exp: number;
-  iat: number;
-  name: string;
-  picture: string;
-  sub: string;
-};
-
-type CodeResponseSuccess = Omit<
-  CodeResponse,
-  "error" | "error_description" | "error_uri"
->;
-type CodeResponseError = Pick<
-  CodeResponse,
-  "error" | "error_description" | "error_uri"
->;
-
-const NEXT_PUBLIC_APP_SERVER = "http://localhost:4000";
-
 const App = () => {
-  // const [token, setToken] = useState(getDecodedAccessToken());
-  // console.log("🚀 ~ App ~ token:", token);
-
   const [user, setUser] = useState<LoginResponse | null>(null);
-
-  useEffect(() => {
-    // fetchUser();
-  }, []);
-
-  const fetchUser = async () => {
-    try {
-      const res = await axios.get("/api/current_user");
-      setUser(res.data);
-    } catch (error) {
-      setUser(null);
-    }
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = Cookies.get("access_token");
+    const isExpired = isTokenExpired(token);
+    async function refreshToken() {
+      let res = await fetch("/api/auth/refresh", { method: "POST"});
+      res = await res.json();
+      console.log("Response:::::", res);
+    }
+    if (isExpired) {
+      console.log(">>>>>>>>>>Expired", isExpired);
+      refreshToken();
+    }
     if (token) {
       const decoded = jwtDecode(token);
-      const userInfo = decoded;
+      const userInfo = decoded as LoginResponse;
       console.log("🚀 ~ useEffect ~ userInfo:", userInfo);
       setUser(userInfo);
     }
+    setIsLoading(false);
   }, []);
-
-  useEffect(() => {
-    console.log(">>>>", user);
-  }, [user]);
 
   const handleLoginSuccess = async (tokenResponse: CodeResponseSuccess) => {
     const { code } = tokenResponse; // Assuming tokenResponse contains PKCE code and code_verifier
@@ -80,7 +55,7 @@ const App = () => {
       // const decodedToken = getDecodedAccessToken();
       const token = Cookies.get("access_token");
       if (token) {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(token) as LoginResponse;
         console.log("🚀 ~ handleLoginSuccess ~ decodedToken:", decoded);
         setUser(decoded);
       }
@@ -104,10 +79,12 @@ const App = () => {
     onError: handleLoginFailure,
   });
 
-  const handleLogout = () => {
-    axios.get("/api/auth/logout").then(() => {
+  const handleLogout = async () => {
+    const response = await fetch("/api/auth/logout");
+    if (response.ok) {
+      Cookies.remove("access_token");
       setUser(null);
-    });
+    }
   };
 
   return (
@@ -117,19 +94,33 @@ const App = () => {
         <meta name="description" content="Team Wagenge FC"></meta>
         <title>Wagenge FC</title>
       </Helmet>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        {user ? (
-          <div>
-            <img src={user.picture} alt="Profile" />
-            <button onClick={handleLogout}>Logout</button>
-          </div>
-        ) : (
-          <div>
-            <GoogleLoginButton onClick={login} />
-          </div>
-        )}
-        {user ? <h2>Hello, {user.name}</h2> : null}
-      </div>
+
+      {isLoading && !user ? (
+        <Center>
+          <Wagenge />
+          <h3 className="font-bold">...loading...</h3>
+        </Center>
+      ) : null}
+
+      {!isLoading && user ? (
+        <Center>
+          <Image
+            src={user.picture}
+            alt="Profile"
+            width={50}
+            height={50}
+            className="rounded-full"
+          />
+          <h2 className="font-bold">Hello, {user.name}</h2>
+          <button onClick={handleLogout}>Logout</button>
+        </Center>
+      ) : null}
+      {!isLoading && !user ? (
+        <Center>
+          <Wagenge />
+          <GoogleLoginButton onClick={login} />
+        </Center>
+      ) : null}
     </div>
   );
 };

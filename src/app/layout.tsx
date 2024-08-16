@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.scss";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 const { GOOGLE_CLIENT_ID } = process.env;
-console.log("🚀 ~ GOOGLE_CLIENT_ID:", GOOGLE_CLIENT_ID);
-
-const inter = Inter({ subsets: ["latin"] });
+import { andika } from "@/app/fonts";
 
 export const metadata: Metadata = {
   title: "Wagenge",
@@ -18,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={andika.className}>
+      <body>
         <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID as string}>
           {children}
         </GoogleOAuthProvider>

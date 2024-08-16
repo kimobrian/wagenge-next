@@ -12,6 +12,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("first_name");
     table.string("last_name");
     table.text("picture");
+    table.text("sub"); // from google
     table.text("refresh_token");
     table.text("google_refresh_token");
     table.timestamp("last_login");

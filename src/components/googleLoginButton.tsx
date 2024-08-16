@@ -5,7 +5,7 @@ type Props = {
 export const GoogleLoginButton = ({ onClick }: Props) => (
   <button
     onClick={onClick}
-    className="flex items-center bg-white  border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+    className="flex items-center bg-white  border border-gray-300 rounded-full shadow-md px-6 py-3 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 w-[256px]"
   >
     <svg
       className="h-6 w-6 mr-2"
@@ -48,6 +48,6 @@ export const GoogleLoginButton = ({ onClick }: Props) => (
         </g>
       </g>
     </svg>
-    <span>Continue with Google</span>
+    <span>Continue With Google</span>
   </button>
 );
