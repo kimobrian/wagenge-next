@@ -24,13 +24,20 @@ export async function up(knex: Knex): Promise<void> {
       .inTable("users")
       .onDelete("SET NULL");
 
+    table
+      .integer("scorer_id")
+      .unsigned()
+      .nullable()
+      .references("id")
+      .inTable("users")
+      .onDelete("SET NULL");
+
     // Minute when the goal was scored
     table.integer("minute").unsigned().notNullable(); // Assuming minute is stored as an integer (e.g., 45)
 
     // Type of goal: Field goal, Penalty, Own goal
     table.enu("goal_type", ["F", "P", "O"]).notNullable(); // F = Field goal, P = Penalty, O = Own goal
 
-    // Indexes for performance
     table.index(["fixture_id", "scorer_id"]);
 
     table.timestamps(true, true);
